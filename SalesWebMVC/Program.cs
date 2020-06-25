@@ -12,6 +12,7 @@ namespace SalesWebMVC
 {
     public class Program
     {
+        //Testando github desktop
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
