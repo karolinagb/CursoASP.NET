@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SalesWebMVC.Models;
 
 namespace SalesWebMVC.Data
@@ -13,7 +9,11 @@ namespace SalesWebMVC.Data
             : base(options)
         {
         }
-
-        public DbSet<SalesWebMVC.Models.Department> Department { get; set; }
+        /*Temos que adicionar cada modelo como DbSet na classe Context para que possam ser reconhecidos pelo
+         fremework:*/
+        /*Depois temos que dar uma nova migration para atualizar o banco de dados*/
+        public DbSet<Department> Department { get; set; }
+        public DbSet<Seller> Seller { get; set; }
+        public DbSet<SalesRecord> SalesRecord { get; set; }
     }
 }
