@@ -24,5 +24,12 @@ namespace SalesWebMVC.Services
             /*Será acessado toda a base de dados referente a vendedores e converter isso para uma lista:*/
             return _context.Seller.ToList();
         }
+
+        public void Insert(Seller obj)
+        {
+            _context.Add(obj);
+            //Para confirmar as inserções acima, temos que chamar o savechanges:
+            _context.SaveChanges();
+        }
     }
 }
