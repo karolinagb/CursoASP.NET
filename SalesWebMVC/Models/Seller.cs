@@ -15,6 +15,11 @@ namespace SalesWebMVC.Models
         //O seller possui um department:
         public Department Department { get; set; }
 
+        /*Quando crio uma propriedade com o nome da classe e escrito Id no final,
+         o framework entende que eu quero guardar o id nessa outra classe e já cria o banco de dados corretamente.
+        O tipo int obriga a não ser nulo:*/
+        public int DepartmentId { get; set; }
+
         /*Um seller possui vários SalesRecords*/
         public ICollection<SalesRecord> Sales { get; set; } = new List<SalesRecord>();
 

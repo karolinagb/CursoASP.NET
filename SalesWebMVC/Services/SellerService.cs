@@ -27,6 +27,8 @@ namespace SalesWebMVC.Services
 
         public void Insert(Seller obj)
         {
+            //Pegando o primeiro department do banco e associando com o seller:
+            obj.Department = _context.Department.First();
             _context.Add(obj);
             //Para confirmar as inserções acima, temos que chamar o savechanges:
             _context.SaveChanges();
