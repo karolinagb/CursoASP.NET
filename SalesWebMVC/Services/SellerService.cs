@@ -28,8 +28,11 @@ namespace SalesWebMVC.Services
         public void Insert(Seller obj)
         {
             //Pegando o primeiro department do banco e associando com o seller:
-            obj.Department = _context.Department.First();
+            //OBS: O Entity Framework já entende que o que será associado é o ID:
+            //obj.Department = _context.Department.First();
+
             _context.Add(obj);
+
             //Para confirmar as inserções acima, temos que chamar o savechanges:
             _context.SaveChanges();
         }

@@ -23,19 +23,19 @@
             <!--th é a coluna-->
             <th>
                 <!--html displaynamefor pega o nome da clase que eu estou usando através da expressão lambda:-->
-                @Html.DisplayNameFor(model => model.Name);
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
                 <!--html displaynamefor pega o nome da clase que eu estou usando através da expressão lambda:-->
-                @Html.DisplayNameFor(model => model.Email);
+                @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
                 <!--html displaynamefor pega o nome da clase que eu estou usando através da expressão lambda:-->
-                @Html.DisplayNameFor(model => model.BirthDate);
+                @Html.DisplayNameFor(model => model.BirthDate)
             </th>
             <th>
                 <!--html displaynamefor pega o nome da clase que eu estou usando através da expressão lambda:-->
-                @Html.DisplayNameFor(model => model.BaseSalary);
+                @Html.DisplayNameFor(model => model.BaseSalary)
             </th>
             <th></th>
         </tr>
@@ -47,16 +47,16 @@
         {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name);
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Email);
+                @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.BirthDate);
+                @Html.DisplayFor(modelItem => item.BirthDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.BaseSalary);
+                @Html.DisplayFor(modelItem => item.BaseSalary)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
