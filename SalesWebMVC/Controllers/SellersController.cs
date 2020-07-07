@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SalesWebMVC.Models;
 using SalesWebMVC.Models.ViewModels;
 using SalesWebMVC.Services;
+using SalesWebMVC.Services.Exceptions;
 
 namespace SalesWebMVC.Controllers
 {
@@ -105,6 +106,54 @@ namespace SalesWebMVC.Controllers
             }
 
             return View(obj);
+        }
+
+        /*Esse opcional é só para evitar de acontecer algum erro de execução porque na verdade esse id é obrigatório:
+         Por isso testamos se o id é igual a nulo:*/
+        public IActionResult Edit(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            //Tenho que recarregar a lista de departamentos para editar o vendedor:
+            List<Department> departments = _departmentService.FindAll();
+            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Seller seller)
+        {
+            /*O id do vendedor que eu estou atualizando não pode ser diferente do id da url da requisição*/
+            if(id != seller.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                /*Como a operação Update pode gerar exceções vamos colocar isso dentro do try:*/
+                _sellerService.Update(seller);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
+            
         }
     }
 }

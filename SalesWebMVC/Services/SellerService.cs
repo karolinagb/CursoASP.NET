@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using SalesWebMVC.Services.Exceptions;
 
 namespace SalesWebMVC.Services
 {
@@ -50,6 +51,34 @@ namespace SalesWebMVC.Services
             var obj = _context.Seller.Find(id);
             _context.Seller.Remove(obj);
             _context.SaveChanges();
+        }
+
+        public void Update(Seller obj)
+        {
+            //Testando se o id já existe no banco a fim de ser feito a atualização:
+            //Any = serve para falar se existe algum registro no banco com a condição que for colocada nele:
+            if (!(_context.Seller.Any(x => x.Id == obj.Id)))
+            {
+                throw new DllNotFoundException("Id not found");
+            }
+
+            /*Quando você chama a operação de atualizar no banco de dados, o banco de dados pode gerar uma exceção de conflito
+             de concorrência. Se esse erro ocorrer no banco de dados, o Entity Framework vai gerar uma excessão chamada
+            DbUpdateConcurrecyException. Então vamos colocar um bloco try para tentar atualizar. E um bloco catch para capturar
+            uma possível exceção do banco de dados:*/
+
+            try
+            {
+                _context.Update(obj);
+                _context.SaveChanges();
+            }
+            //Se o Entity Framework lançar essa exceção abaixo:
+            catch (DbUpdateConcurrencyException e)
+            {
+                //Nós vamos lançar outra a nível de serviço:
+                throw new DbConcurrencyException(e.Message);
+            }
+            
         }
     }
 }
