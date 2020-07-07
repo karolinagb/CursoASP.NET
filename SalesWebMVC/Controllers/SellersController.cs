@@ -53,5 +53,40 @@ namespace SalesWebMVC.Controllers
              O nameoof ajuda quando eu mudar o nome da ação, pois ai eu não preciso mudar aq tb*/
             return RedirectToAction(nameof(Index));
         }
+
+
+        //GET
+        //int? = opcional
+        public IActionResult Delete(int? id)
+        {
+            //Se não for digitado o id:
+            if(id == null)
+            {
+                //NotFound instância uma resposta básica:
+                return NotFound();
+            }
+
+            //Trazer o objeto que estou querendo deletar:
+            //Tem que por o id.Value para pegar o valor dele, caso exista, porque ele é um objeto opcional:
+            var obj = _sellerService.FindById(id.Value);
+
+            //Se o id não existir:
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _sellerService.Remove(id);
+
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

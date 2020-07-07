@@ -1,0 +1,52 @@
+﻿<!--Tipo do model que essa view recebe-->
+@model SalesWebMVC.Models.Seller
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<!--Montando uma tela de confirmação:-->
+<h3>Are you sure want to delete this?</h3>
+
+<!--Estrutura para mostrar os dados do objeto:-->
+<div>
+    <h4>Seller</h4>
+    <hr />
+
+    <!--Listando os campos do objetos com o dl (dt = mostra o nome do campo e dl = mostra o valor do campo:-->
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BirthDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BaseSalary)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BaseSalary)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <!--Campo oculto para enviar o código que será deletado:-->
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-danger"/>
+        <a asp-action="Index">Back to list</a>
+    </form>
+</div>
