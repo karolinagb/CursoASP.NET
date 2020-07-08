@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SalesWebMVC.Models
 {
@@ -8,8 +9,20 @@ namespace SalesWebMVC.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+
+        /*Transformando o e-mail em um link de e-mail:*/
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+
+        /*Com o anotation display eu posso utilizar o nome que eu quise nos labels:*/
+        [Display (Name = "Birth Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime BirthDate  { get; set; }
+
+        [Display (Name = "Base Salary")]
+        //Definindo o formato dos dados: "{0:F2} - define duas casas decimais"
+        [DisplayFormat (DataFormatString = "{0:F2}")]
         public double BaseSalary { get; set; }
 
         //O seller possui um department:

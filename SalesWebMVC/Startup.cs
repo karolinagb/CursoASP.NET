@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -57,6 +59,22 @@ namespace SalesWebMVC
         desse objeto.*/
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, SeedingService seedingService)
         {
+            /*Definindo o local da aplicação como sendo dos EUA:*/
+            var enUS = new CultureInfo("en-US");
+
+            //Opções para localização:
+            var localizationOptions = new RequestLocalizationOptions
+            {
+                //Local padrão da aplicação:
+                DefaultRequestCulture = new RequestCulture(enUS),
+                //Locais possíveis da aplicação:
+                SupportedCultures = new List<CultureInfo> { enUS },
+                SupportedUICultures = new List<CultureInfo> { enUS }
+            };
+
+            //Usando as opções de localização definidas:
+            app.UseRequestLocalization(localizationOptions);
+
             //Perfil de desenvolvimento
             if (env.IsDevelopment())
             {
