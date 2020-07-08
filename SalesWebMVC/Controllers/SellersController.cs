@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -64,7 +65,8 @@ namespace SalesWebMVC.Controllers
             if(id == null)
             {
                 //NotFound instância uma resposta básica:
-                return NotFound();
+                /*Utilizando agora o erro personalizado. Para colocar a mensagem vamos instanciar um objeto anônimo:*/
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
             //Trazer o objeto que estou querendo deletar:
@@ -74,7 +76,7 @@ namespace SalesWebMVC.Controllers
             //Se o id não existir:
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
 
             return View(obj);
@@ -95,14 +97,14 @@ namespace SalesWebMVC.Controllers
         {
             if(id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
             var obj = _sellerService.FindById(id.Value);
 
             if(obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
 
             return View(obj);
@@ -114,13 +116,13 @@ namespace SalesWebMVC.Controllers
         {
             if(id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
             var obj = _sellerService.FindById(id.Value);
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
 
             //Tenho que recarregar a lista de departamentos para editar o vendedor:
@@ -136,7 +138,8 @@ namespace SalesWebMVC.Controllers
             /*O id do vendedor que eu estou atualizando não pode ser diferente do id da url da requisição*/
             if(id != seller.Id)
             {
-                return BadRequest();
+                //Id não corresponde:
+                return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
             }
 
             try
@@ -145,15 +148,30 @@ namespace SalesWebMVC.Controllers
                 _sellerService.Update(seller);
                 return RedirectToAction(nameof(Index));
             }
-            catch (NotFoundException)
+            /*Como as exeções já carregam uma mensagem na hora de redirecionar para página de erro vamos usar a mensagem
+             da exceção:*/
+            catch (NotFoundException e)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
-            catch (DbConcurrencyException)
+            catch (DbConcurrencyException e)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
             
+        }
+
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                //Macete para pegar o id da requisição:
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+                /*O current é opcional, se ele for nulo vamos colocar o operador de coalecência nula e do lado o que poderá
+                 ser usado como id.*/
+            };
+            return View(viewModel);
         }
     }
 }
