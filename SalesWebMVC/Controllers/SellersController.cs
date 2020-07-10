@@ -49,6 +49,19 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Seller seller)
         {
+            /*Validação no controller caso o javascript do usuario esteja desabilitado:*/
+            //ModelState.IsValid = testa se o modelo foi validado
+            if (!(ModelState.IsValid))
+            {
+                //Antes de retornar a view, vamos recarregar o formulario:
+                var departments = _departmentService.FindAll();
+
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+
+                /*Vai voltar na tela de criação do vendedor enquanto não estiver correto:*/
+                return View(viewModel);
+            }
+
             _sellerService.Insert(seller);
 
             /*Redirect retorna para a ação que eu quiser.
@@ -135,8 +148,21 @@ namespace SalesWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Seller seller)
         {
+            /*Validação no controller caso o javascript do usuario esteja desabilitado:*/
+            //ModelState.IsValid = testa se o modelo foi validado
+            if (!(ModelState.IsValid))
+            {
+                //Antes de retornar a view, vamos recarregar o formulario:
+                var departments = _departmentService.FindAll();
+
+                var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+
+                /*Vai voltar na tela de criação do vendedor enquanto não estiver correto:*/
+                return View(viewModel);
+            }
+
             /*O id do vendedor que eu estou atualizando não pode ser diferente do id da url da requisição*/
-            if(id != seller.Id)
+            if (id != seller.Id)
             {
                 //Id não corresponde:
                 return RedirectToAction(nameof(Error), new { message = "Id mismatch" });

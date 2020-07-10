@@ -17,21 +17,38 @@
 
         <!--Essa ação create não é a que criamos, mas a do método post que vamos criar ainda:-->
         <form asp-action="Create">
+
+            <!--Cria um sumário das validações:-->
+            <div asp-validation-summary="All" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="Seller.Name" class="control-label"></label>
                 <input asp-for="Seller.Name" class="form-control" />
+
+                <!--Validação aparece por campo:-->
+                <span asp-validation-for="Seller.Name" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="Seller.Email" class="control-label"></label>
                 <input asp-for="Seller.Email" class="form-control" />
+
+                <span asp-validation-for="Seller.Email" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="Seller.BirthDate" class="control-label"></label>
                 <input asp-for="Seller.BirthDate" class="form-control" />
+
+                <span asp-validation-for="Seller.BirthDate" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="Seller.BaseSalary" class="control-label"></label>
                 <input asp-for="Seller.BaseSalary" class="form-control" />
+
+                <span asp-validation-for="Seller.BaseSalary" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="Seller.DepartmentId" class="control-label"></label>
@@ -45,3 +62,8 @@
     </div>
 
 </div>
+
+<!--Macete para mostrar as validações no lado do cliente:-->
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
