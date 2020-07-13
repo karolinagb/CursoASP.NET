@@ -1,7 +1,9 @@
-﻿using SalesWebMVC.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using SalesWebMVC.Data;
 using SalesWebMVC.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SalesWebMVC.Services
 {
@@ -15,9 +17,12 @@ namespace SalesWebMVC.Services
         }
 
         //Retonando todos os departamentos:
-        public List<Department> FindAll()
+        public async Task<List<Department>> FindAllAsync()
         {
-            return _context.Department.OrderBy(x => x.Name).ToList();
+            /*ToList provoca a execução da expressão Lambda, porém precisamos que essa operação seja assíncrona então
+             vamos usar o ToListAsync.
+            Temos que avisar o compilador que isso é uma chamada assíncrona*/
+            return await _context.Department.OrderBy(x => x.Name).ToListAsync();
         }
     }
 }

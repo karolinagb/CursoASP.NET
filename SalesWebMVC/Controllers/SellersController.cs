@@ -25,18 +25,19 @@ namespace SalesWebMVC.Controllers
             _departmentService = departmentService;
         }
 
-        public IActionResult Index()
+        /*No caso do controlador não vamos trocar o nome da operação pois ela tem que seguir o padrão do framework*/
+        public async Task<IActionResult> Index()
         {
             //Recebendo a lista de vendedores:
-            var list = _sellerService.FindAll();
+            var list = await _sellerService.FindAllAsync();
             //Imprimindo:
             return View(list);
         }
 
         //IActionResult é o tipo de retorno de todas as ações:
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _departmentService.FindAll();
+            var departments = await _departmentService.FindAllAsync();
 
             var viewModel = new SellerFormViewModel { Departments = departments};
 
@@ -47,14 +48,14 @@ namespace SalesWebMVC.Controllers
         [HttpPost]
         //Previnindo que aplicação sofra ataque csrf = alguém envia dados maliciosos aproveitando a sua sessao
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Seller seller)
+        public async Task<IActionResult> Create(Seller seller)
         {
             /*Validação no controller caso o javascript do usuario esteja desabilitado:*/
             //ModelState.IsValid = testa se o modelo foi validado
             if (!(ModelState.IsValid))
             {
                 //Antes de retornar a view, vamos recarregar o formulario:
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
 
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
 
@@ -62,7 +63,7 @@ namespace SalesWebMVC.Controllers
                 return View(viewModel);
             }
 
-            _sellerService.Insert(seller);
+            await _sellerService.InsertAsync(seller);
 
             /*Redirect retorna para a ação que eu quiser.
              O nameoof ajuda quando eu mudar o nome da ação, pois ai eu não preciso mudar aq tb*/
@@ -72,7 +73,7 @@ namespace SalesWebMVC.Controllers
 
         //GET
         //int? = opcional
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             //Se não for digitado o id:
             if(id == null)
@@ -84,7 +85,7 @@ namespace SalesWebMVC.Controllers
 
             //Trazer o objeto que estou querendo deletar:
             //Tem que por o id.Value para pegar o valor dele, caso exista, porque ele é um objeto opcional:
-            var obj = _sellerService.FindById(id.Value);
+            var obj = await _sellerService.FindByIdAsync(id.Value);
 
             //Se o id não existir:
             if (obj == null)
@@ -97,23 +98,23 @@ namespace SalesWebMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _sellerService.Remove(id);
+            await _sellerService.RemoveAsync(id);
 
 
             return RedirectToAction(nameof(Index));
         }
 
         //GET
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if(id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
-            var obj = _sellerService.FindById(id.Value);
+            var obj = await _sellerService.FindByIdAsync(id.Value);
 
             if(obj == null)
             {
@@ -125,35 +126,35 @@ namespace SalesWebMVC.Controllers
 
         /*Esse opcional é só para evitar de acontecer algum erro de execução porque na verdade esse id é obrigatório:
          Por isso testamos se o id é igual a nulo:*/
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if(id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
 
-            var obj = _sellerService.FindById(id.Value);
+            var obj = await _sellerService.FindByIdAsync(id.Value);
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
 
             //Tenho que recarregar a lista de departamentos para editar o vendedor:
-            List<Department> departments = _departmentService.FindAll();
+            List<Department> departments = await _departmentService.FindAllAsync();
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Seller seller)
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
             /*Validação no controller caso o javascript do usuario esteja desabilitado:*/
             //ModelState.IsValid = testa se o modelo foi validado
             if (!(ModelState.IsValid))
             {
                 //Antes de retornar a view, vamos recarregar o formulario:
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
 
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
 
@@ -171,7 +172,7 @@ namespace SalesWebMVC.Controllers
             try
             {
                 /*Como a operação Update pode gerar exceções vamos colocar isso dentro do try:*/
-                _sellerService.Update(seller);
+                await _sellerService.UpdateAsync(seller);
                 return RedirectToAction(nameof(Index));
             }
             /*Como as exeções já carregam uma mensagem na hora de redirecionar para página de erro vamos usar a mensagem
@@ -187,6 +188,7 @@ namespace SalesWebMVC.Controllers
             
         }
 
+        //A ação de erro não precisa ser assincrona porque ela nao tem nenhuma acesso a dados:
         public IActionResult Error(string message)
         {
             var viewModel = new ErrorViewModel
