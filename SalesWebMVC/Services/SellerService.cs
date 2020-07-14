@@ -50,10 +50,18 @@ namespace SalesWebMVC.Services
 
         public async Task RemoveAsync(int id)
         {
-            //Find e remove são do dbset do context
-            var obj = await _context.Seller.FindAsync(id);
-            _context.Seller.Remove(obj);
-            await _context.SaveChangesAsync();
+            try
+            {
+                //Find e remove são do dbset do context
+                var obj = await _context.Seller.FindAsync(id);
+                _context.Seller.Remove(obj);
+                await _context.SaveChangesAsync();
+            }
+            /*DbUpdateException captura qualquer exceção de integridade referencial*/
+            catch (DbUpdateException e)
+            {
+                throw new IntegrityException("Can't delete because he/she has sales");
+            }
         }
 
         public async Task UpdateAsync(Seller obj)
@@ -81,7 +89,7 @@ namespace SalesWebMVC.Services
                 //Nós vamos lançar outra a nível de serviço:
                 throw new DbConcurrencyException(e.Message);
             }
-            
+
         }
     }
 }
