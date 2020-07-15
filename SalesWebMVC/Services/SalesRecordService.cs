@@ -42,5 +42,30 @@ namespace SalesWebMVC.Services
                 .OrderByDescending(x => x.Date)
                 .ToListAsync();
         }
+
+        public async Task<List<IGrouping<Department,SalesRecord>>> FindByDateGroupingAsync(DateTime? minDate, DateTime? maxDate)
+        {
+            /*Vai pegar um objeto do tipo DbSet (SalesRecord) e transformar num
+             IQueryble para fazer consultas (permite mais opções de consulta):*/
+            var result = from obj in _context.SalesRecord select obj;
+            if (minDate.HasValue)
+            {
+                result = result.Where(X => X.Date >= minDate.Value);
+            }
+            if (maxDate.HasValue)
+            {
+                result = result.Where(x => x.Date <= maxDate.Value);
+            }
+            /*Para executar a consulta vamos usar o ToList(), mas vamos acrescentar
+             mais coisas:*/
+            /*Vamos fazer um join da tabela de vendedor com a de departamento e colocar
+             em ordem descrescente por data*/
+            return await result
+                .Include(x => x.Seller)
+                .Include(x => x.Seller.Department)
+                .OrderByDescending(x => x.Date)
+                .GroupBy(x => x.Seller.Department)
+                .ToListAsync();
+        }
     }
 }
